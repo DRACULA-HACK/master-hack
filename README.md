@@ -42,3 +42,46 @@ def get_phone_info(number):
 # Example usage
 number = "+1234567890"
 print(get_phone_info(number))
+
+
+
+#
+
+
+
+
+
+import phonenumbers
+from phonenumbers import carrier, geocoder, timezone
+import numpy as np
+
+def process_data(data_list):
+    # Use numpy array for better performance if dealing with large datasets
+    data_array = np.array(data_list)
+    
+    results = []
+    
+    for number in data_array:
+        try:
+            parsed_number = phonenumbers.parse(number)
+            
+            result = {
+                "Phone Number": f"+{parsed_number.country_code}{parsed_number.national_number}",
+                "Country": geocoder.description_for_number(parsed_number, 'en'),
+                "Network/Carrier": carrier.name_for_number(parsed_number, 'en'),
+                "Time Zone": timezone.time_zones_for_number(parsed_number)[0]
+            }
+            
+            results.append(result)
+            
+        except:
+            results.append({"Phone Number": number, "Status": "Invalid"})
+    
+    return results
+
+# Example usage
+phone_numbers = ["+1234567890", "+911234567890"]
+results = process_data(phone_numbers)
+
+for res in results:
+    print(res)
